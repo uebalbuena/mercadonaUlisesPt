@@ -1,14 +1,14 @@
 package com.example.mercadonaulisespt.viewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.mercadonaulisespt.model.AllCharacters
 import com.example.mercadonaulisespt.model.ResultsCharacters
 import com.example.mercadonaulisespt.service.Api
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -30,7 +30,7 @@ class CharactersViewModel: ViewModel() {
     }
 
     fun getSingleCharacter(id: Int): LiveData<ResultsCharacters> {
-        if (characterSingle == null || characterSingle!!.isInitialized) {
+        if (characterSingle == null) {
             characterSingle = MutableLiveData<ResultsCharacters>()
             loadSingleCharacter(id)
         }
@@ -38,59 +38,36 @@ class CharactersViewModel: ViewModel() {
     }
 
     private fun loadCharacters() {
+        viewModelScope.launch {
+            try {
+                val api = Retrofit.Builder()
+                    .baseUrl("https://rickandmortyapi.com/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+                    .create(Api::class.java)
 
-        val baseURL = "https://rickandmortyapi.com/"
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl(baseURL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val api = retrofit.create(Api::class.java)
-        val call = api.getCharacter()
-
-        call.enqueue(object : Callback<AllCharacters> {
-            override fun onFailure(call: Call<AllCharacters>, t: Throwable) {
+                val response = api.getCharacter()
+                characterList?.value = response
+            } catch (e: Exception) {
+                Log.e("CharactersViewModel", "Error: ${e.message}")
             }
-
-            override fun onResponse(
-                call: Call<AllCharacters>,
-                response: Response<AllCharacters>
-            ) {
-                characterList!!.value = response.body()
-            }
-        })
-
+        }
     }
 
     private fun loadSingleCharacter(id: Int) {
+        viewModelScope.launch {
+            try {
+                val api = Retrofit.Builder()
+                    .baseUrl("https://rickandmortyapi.com/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+                    .create(Api::class.java)
 
-        val baseURL = "https://rickandmortyapi.com/"
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl(baseURL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val api = retrofit.create(Api::class.java)
-        val call = api.getSingleCharacter(id)
-
-        call.enqueue(object : Callback<ResultsCharacters> {
-            override fun onFailure(call: Call<ResultsCharacters>, t: Throwable) {
+                val response = api.getSingleCharacter(id)
+                characterSingle?.value = response
+            } catch (e: Exception) {
+                Log.e("CharactersViewModel", "Error: ${e.message}")
             }
-
-            override fun onResponse(
-                call: Call<ResultsCharacters>,
-                response: Response<ResultsCharacters>
-            ) {
-                characterSingle!!.value = response.body()
-            }
-        })
-    }
-
-    fun saveStrings(name: String, image: String, id: Int) {
-        this.image.value = image
-        this.name.value = name
-        this.id.value = id
+        }
     }
 }

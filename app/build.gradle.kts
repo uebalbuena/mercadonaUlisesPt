@@ -54,9 +54,9 @@ dependencies {
 
     // retrofit
     implementation(libs.retrofit)
-    // gson converter
+    // Gson converter
     implementation(libs.retrofitGsonConverter)
-    // picasso
+    // Picasso
     implementation(libs.picasso)
 
 }

@@ -7,11 +7,10 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface Api {
+    @GET("api/character")
+    suspend fun getCharacter(): AllCharacters
 
-    @GET("/api/character")
-    fun getCharacter(): Call<AllCharacters>
-
-    @GET("/api/character/{id}")
-    fun getSingleCharacter(@Path("id") id: Int): Call<ResultsCharacters>
-
+    @GET("api/character/{id}")
+    suspend fun getSingleCharacter(@Path("id") id: Int): ResultsCharacters
 }
+

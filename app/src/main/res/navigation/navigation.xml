@@ -9,18 +9,15 @@
         android:id="@+id/allCharactersFragment"
         android:name="com.example.mercadonaulisespt.views.fragment.AllCharactersFragment"
         android:label="fragment_all_characters"
-        tools:layout="@layout/fragment_all_characters" >
+        tools:layout="@layout/fragment_all_characters">
         <action
             android:id="@+id/action_allCharactersFragment_to_singleCharacterFragment"
             app:destination="@id/singleCharacterFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/singleCharacterFragment"
         android:name="com.example.mercadonaulisespt.views.fragment.SingleCharacterFragment"
         android:label="fragment_single_character"
-        tools:layout="@layout/fragment_single_character" >
-        <action
-            android:id="@+id/action_singleCharacterFragment_to_allCharactersFragment"
-            app:destination="@id/allCharactersFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_single_character" />
 </navigation>

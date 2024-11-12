@@ -1,5 +1,6 @@
 package com.example.mercadonaulisespt.views.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,15 +12,15 @@ import com.example.mercadonaulisespt.databinding.ItemAllCharactersBinding
 import com.example.mercadonaulisespt.model.ResultsCharacters
 import com.squareup.picasso.Picasso
 
-class AllCharactersAdapter (
-    private val list: List<ResultsCharacters>,
-    private val clickListener: OnCharacterClickListener)
-    : RecyclerView.Adapter<AllCharactersAdapter.AllCharactersViewHolder>() {
+class AllCharactersAdapter(
+    private var list: MutableList<ResultsCharacters>,
+    private val clickListener: OnCharacterClickListener
+) : RecyclerView.Adapter<AllCharactersAdapter.AllCharactersViewHolder>() {
 
     private lateinit var characterItemBinding: ItemAllCharactersBinding
 
     interface OnCharacterClickListener {
-        fun onCharacterClick(image: String, name: String, id: Int)
+        fun onCharacterClick(characterName: String, imageUrl: String, characterId: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AllCharactersViewHolder {
@@ -52,5 +53,12 @@ class AllCharactersAdapter (
             .load(url)
             .placeholder(R.drawable.ic_loading)
             .into(this)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateData(newList: List<ResultsCharacters>) {
+        list.clear()
+        list.addAll(newList)
+        notifyDataSetChanged()
     }
 }

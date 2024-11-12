@@ -13,8 +13,12 @@ import com.example.mercadonaulisespt.viewModel.CharactersViewModel
 import com.squareup.picasso.Picasso
 class SingleCharacterFragment : Fragment() {
 
-    private val viewModel : CharactersViewModel by activityViewModels()
     private lateinit var singleCharacterBinding: FragmentSingleCharacterBinding
+    private val viewModel: CharactersViewModel by activityViewModels()
+
+    private var characterName: String? = null
+    private var imageUrl: String? = null
+    private var characterId: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,8 +30,15 @@ class SingleCharacterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        singleCharacterBinding.characterName.text = viewModel.name.value
-        viewModel.image.value?.let { singleCharacterBinding.imageDetail.setImageUrl(it) }
+        arguments?.let {
+            characterName = it.getString("characterName")
+            imageUrl = it.getString("imageUrl")
+            characterId = it.getInt("characterId")
+        }
+
+        singleCharacterBinding.characterName.text = characterName
+        imageUrl?.let { singleCharacterBinding.imageDetail.setImageUrl(it) }
+
         getSingleCharacter()
     }
 
@@ -36,19 +47,19 @@ class SingleCharacterFragment : Fragment() {
         getSingleCharacter()
     }
 
-    private fun ImageView.setImageUrl(url:String){
+    private fun ImageView.setImageUrl(url: String) {
         Picasso.get()
             .load(url)
             .placeholder(R.drawable.ic_loading)
             .into(this)
     }
 
-    private fun getSingleCharacter(){
-        viewModel.id.value?.let { id ->
-            viewModel.getSingleCharacter(id).observe(viewLifecycleOwner) {
-                singleCharacterBinding.characterStatus.text = it.status
-                singleCharacterBinding.characterSpecies.text = it.species
-                singleCharacterBinding.characterGender.text = it.gender
+    private fun getSingleCharacter() {
+        if (characterId != 0) {
+            viewModel.getSingleCharacter(characterId).observe(viewLifecycleOwner) { character ->
+                singleCharacterBinding.characterStatus.text = character.status
+                singleCharacterBinding.characterSpecies.text = character.species
+                singleCharacterBinding.characterGender.text = character.gender
             }
         }
     }
