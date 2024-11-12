@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">mercadonaUlisesPt</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- TODO: Strings for XML -->
+    <string name="all_characters_image_description">Image of the rick and morty logo</string>
+    <string name="single_character_image_description">Image of the Character that you clicked on</string>
 </resources>

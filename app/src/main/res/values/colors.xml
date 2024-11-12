@@ -2,4 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="rick_and_morty_blue">#51B2C9</color>
+    <color name="rick_and_morty_dark_blue">#2A5C68</color>
+    <color name="rick_and_morty_green">#B9DD4E</color>
 </resources>
