@@ -51,4 +51,12 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // retrofit
+    implementation(libs.retrofit)
+    // gson converter
+    implementation(libs.retrofitGsonConverter)
+    // picasso
+    implementation(libs.picasso)
+
 }

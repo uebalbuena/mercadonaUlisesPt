@@ -6,4 +6,6 @@
     <!-- TODO: Strings for XML -->
     <string name="all_characters_image_description">Image of the rick and morty logo</string>
     <string name="single_character_image_description">Image of the Character that you clicked on</string>
+    <string name="item_character_image_description">Image of the Character on the list</string>
+    <string name="character_name">Character name</string>
 </resources>

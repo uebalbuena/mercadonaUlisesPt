@@ -5,56 +5,67 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mercadonaulisespt.R
+import com.example.mercadonaulisespt.databinding.FragmentAllCharactersBinding
+import com.example.mercadonaulisespt.model.ResultsCharacters
+import com.example.mercadonaulisespt.viewModel.CharactersViewModel
+import com.example.mercadonaulisespt.views.adapter.AllCharactersAdapter
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class AllCharactersFragment : Fragment(), AllCharactersAdapter.OnCharacterClickListener {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [AllCharactersFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class AllCharactersFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private val allCharactersViewModel: CharactersViewModel by activityViewModels()
+    private lateinit var charactersBinding: FragmentAllCharactersBinding
+    private var charactersAdapter: AllCharactersAdapter?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+        getCharacters()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_all_characters, container, false)
+    ): View {
+        charactersBinding = FragmentAllCharactersBinding.inflate(inflater, container, false)
+        return charactersBinding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AllCharactersFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AllCharactersFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        getCharacters()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getCharacters()
+    }
+
+    private fun getCharacters() {
+        if (view != null){
+            allCharactersViewModel.getCharacters().observe(viewLifecycleOwner) { allCharacters ->
+                prepareRecyclerView(allCharacters.characterResults)
+                charactersBinding.progressList.visibility = View.GONE
             }
+        }
+    }
+
+    private fun prepareRecyclerView(charactersList: List<ResultsCharacters>){
+        charactersAdapter = AllCharactersAdapter(charactersList, this)
+        charactersBinding.recyclerAllCharacters.layoutManager = LinearLayoutManager(context)
+        charactersBinding.recyclerAllCharacters.itemAnimator = DefaultItemAnimator()
+        charactersBinding.recyclerAllCharacters.adapter = charactersAdapter
+    }
+
+    override fun onCharacterClick(
+        image: String,
+        name: String,
+        id: Int
+    ) {
+        allCharactersViewModel.saveStrings(image, name, id)
+        findNavController().navigate(R.id.action_allCharactersFragment_to_singleCharacterFragment)
     }
 }
