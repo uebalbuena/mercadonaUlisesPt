@@ -8,12 +8,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mercadonaulisespt.R
+import com.example.mercadonaulisespt.data.Character
 import com.example.mercadonaulisespt.databinding.ItemAllCharactersBinding
 import com.example.mercadonaulisespt.model.ResultsCharacters
 import com.squareup.picasso.Picasso
 
 class AllCharactersAdapter(
-    private var list: MutableList<ResultsCharacters>,
+    private var list: MutableList<Any>, // Use Any to handle both Character and ResultsCharacters
     private val clickListener: OnCharacterClickListener
 ) : RecyclerView.Adapter<AllCharactersAdapter.AllCharactersViewHolder>() {
 
@@ -31,24 +32,35 @@ class AllCharactersAdapter(
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: AllCharactersViewHolder, position: Int) {
-        val characters: ResultsCharacters = list[position]
-        holder.bind(characters, clickListener)
+        val character = list[position]
+        holder.bind(character, clickListener)
     }
 
-    inner class AllCharactersViewHolder(view: View) : RecyclerView.ViewHolder(view){
+    inner class AllCharactersViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private var name: TextView = characterItemBinding.characterName
         private var image: ImageView = characterItemBinding.characterImage
 
-        fun bind (characters: ResultsCharacters, characterClickListener: OnCharacterClickListener){
-            name.text = characters.name
-            image.setImageUrl(characters.image)
-            itemView.setOnClickListener{
-                characterClickListener.onCharacterClick(characters.name, characters.image, characters.id)
+        fun bind(character: Any, characterClickListener: OnCharacterClickListener) {
+            when (character) {
+                is ResultsCharacters -> {
+                    name.text = character.name
+                    image.setImageUrl(character.image)
+                    itemView.setOnClickListener {
+                        characterClickListener.onCharacterClick(character.name, character.image, character.id)
+                    }
+                }
+                is Character -> {
+                    name.text = character.name
+                    image.setImageUrl(character.imageUrl)
+                    itemView.setOnClickListener {
+                        characterClickListener.onCharacterClick(character.name, character.imageUrl, character.id)
+                    }
+                }
             }
         }
     }
 
-    private fun ImageView.setImageUrl(url:String){
+    private fun ImageView.setImageUrl(url: String) {
         Picasso.get()
             .load(url)
             .placeholder(R.drawable.ic_loading)
@@ -56,7 +68,7 @@ class AllCharactersAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateData(newList: List<ResultsCharacters>) {
+    fun updateData(newList: List<Any>) {
         list.clear()
         list.addAll(newList)
         notifyDataSetChanged()

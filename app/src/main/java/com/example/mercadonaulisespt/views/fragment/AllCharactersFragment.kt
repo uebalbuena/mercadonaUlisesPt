@@ -34,13 +34,21 @@ class AllCharactersFragment : Fragment(), AllCharactersAdapter.OnCharacterClickL
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         adapter = AllCharactersAdapter(mutableListOf(), this)
         binding.recyclerAllCharacters.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
             adapter = this@AllCharactersFragment.adapter
         }
+
+        viewModel.getAllCharactersFromRoom().observe(viewLifecycleOwner, Observer { characters ->
+            if (characters.isNotEmpty()) {
+                adapter.updateData(characters)
+                binding.progressList.visibility = View.GONE
+            } else {
+                binding.progressList.visibility = View.VISIBLE
+            }
+        })
 
         viewModel.getCharacters().observe(viewLifecycleOwner) { characters ->
             characters?.characterResults?.let { results ->

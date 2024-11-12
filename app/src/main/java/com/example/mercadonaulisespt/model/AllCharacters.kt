@@ -8,7 +8,7 @@ class AllCharacters {
     lateinit var characterResults: List<ResultsCharacters>
 }
 
-class ResultsCharacters(
+data class ResultsCharacters(
     val id: Int,
     val name: String,
     val image: String,
